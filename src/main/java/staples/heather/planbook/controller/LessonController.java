@@ -1,6 +1,8 @@
 package staples.heather.planbook.controller;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -20,8 +22,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.servers.Server;
 import staples.heather.planbook.Planbook;
+import staples.heather.planbook.dao.DefaultLessonDao;
 import staples.heather.planbook.entity.Lesson;
-import staples.heather.planbook.entity.User;
+import staples.heather.planbook.entity.Day;
 
 @Validated
 @RequestMapping("/lesson")
@@ -40,11 +43,7 @@ public interface LessonController {
               description = "A lesson was returned", 
               content = @Content(
                   mediaType = "application/json", 
-                  schema = @Schema(implementation = Planbook.class))),
-          @ApiResponse(
-              responseCode = "400", 
-              description = "The requested parameters were invalid", 
-              content = @Content(mediaType = "application/json")),
+                  schema = @Schema(implementation = Planbook.class))),          
           @ApiResponse(
               responseCode = "404", 
               description = "No lesson was found with the input criteria", 
@@ -56,20 +55,56 @@ public interface LessonController {
       },
       parameters = {
           @Parameter(
-              name = "id", 
+              name = "lessonId", 
               allowEmptyValue = false, 
               required = true, 
               description = "The lesson id"),
       }
    )
   
-  @GetMapping
+  @GetMapping("/{lessonId}")
   @ResponseStatus(code = HttpStatus.OK)
-  List<Lesson> fetchLesson(
-      @Length(max = 100)
-//      @Pattern(regexp = "[\\w\\s]*")
-      @RequestParam(required = true) int id);
+  List<Lesson> fetchLessonById(
+      @RequestParam(required = true) 
+      int id);
  
+  @Operation(
+      summary = "Returns a List of Lessons by Unit",
+      description = "Returns a List of Lessons by Unit",
+      responses = {
+          @ApiResponse(
+              responseCode = "200", 
+              description = "A list of unit lessons was returned", 
+              content = @Content(
+                  mediaType = "application/json", 
+                  schema = @Schema(implementation = Planbook.class))),
+//  
+              
+          @ApiResponse(
+              responseCode = "404", 
+              description = "No lessons were found with the input criteria", 
+              content = @Content(mediaType = "application/json")),
+          @ApiResponse(
+              responseCode = "500", 
+              description = "An unplanned error occurred", 
+              content = @Content(mediaType = "application/json"))
+      },
+      parameters = {
+          @Parameter(
+              name = "unitId", 
+              allowEmptyValue = false, 
+              required = true, 
+              description = "The unit id"),
+      }
+   )
+  
+  @GetMapping("/{unitId}")
+  @ResponseStatus(code = HttpStatus.OK)
+  List<Lesson> fetchLessonsByUnit(
+      @RequestParam(required = true) int unitId);
+  
+  
+  
   @Operation(
       summary = "Returns a list of Lessons",
       description = "Returns a list of Lessons",
@@ -80,14 +115,6 @@ public interface LessonController {
               content = @Content(
                   mediaType = "application/json", 
                   schema = @Schema(implementation = Planbook.class))),
-          @ApiResponse(
-              responseCode = "400", 
-              description = "The requested parameters were invalid", 
-              content = @Content(mediaType = "application/json")),
-          @ApiResponse(
-              responseCode = "404", 
-              description = "No lessons were found with the input criteria", 
-              content = @Content(mediaType = "application/json")),
           @ApiResponse(
               responseCode = "500", 
               description = "An unplanned error occurred", 
@@ -121,38 +148,39 @@ public interface LessonController {
       },
       parameters = {
           @Parameter(
-              name = "name", 
+              name = "lessonName", 
               allowEmptyValue = false, 
               required = true, 
-              description = "The lesson name (i.e., 'Staples')"),
+              description = "The lesson name"),
           @Parameter(
               name = "objective", 
               allowEmptyValue = false, 
               required = true, 
-              description = "The lesson objective (i.e., 'Staples')"),
+              description = "The lesson objective"),
           @Parameter(
               name = "content", 
               allowEmptyValue = false, 
               required = true, 
-              description = "The lesson content (i.e., 'Staples')"),
+              description = "The lesson content"),
           @Parameter(
               name = "unitId", 
               allowEmptyValue = false, 
               required = true, 
-              description = "The unitId)")
+              description = "The unit id")
       }
    )
   @ResponseStatus(code = HttpStatus.CREATED)
   @PostMapping
-  void createLesson(@RequestParam(required = true) String name, String objective, String content, int unitId); 
+  void createLesson(@RequestParam(required = true) String lessonName, @RequestParam(required = true) String objective, 
+      @RequestParam(required = true) String content, @RequestParam(required = true) int unitId); 
   
   @Operation(
-      summary = "Updates a Lesson",
-      description = "Updates a Lesson",
+      summary = "Updates Lesson Content",
+      description = "Updates Lesson Content",
       responses = {
           @ApiResponse(
               responseCode = "200", 
-              description = "A lesson was updated", 
+              description = "A lesson's content was updated", 
               content = @Content(
                   mediaType = "application/json", 
                   schema = @Schema(implementation = Planbook.class))),
@@ -171,20 +199,10 @@ public interface LessonController {
       },
       parameters = {
           @Parameter(
-              name = "id", 
+              name = "lessonId", 
               allowEmptyValue = false, 
               required = true, 
               description = "The lesson id"),
-          @Parameter(
-              name = "newName", 
-              allowEmptyValue = false, 
-              required = true, 
-              description = "The new lesson name"),
-          @Parameter(
-              name = "newObjective", 
-              allowEmptyValue = false, 
-              required = true, 
-              description = "The new lesson objective"),
           @Parameter(
               name = "newContent", 
               allowEmptyValue = false, 
@@ -194,7 +212,7 @@ public interface LessonController {
    )
   @ResponseStatus(code = HttpStatus.OK)
   @PutMapping
-  void updateLesson(@RequestParam(required = true) int id, String newName, String newObjective, String newContent);
+  int updateLesson(@RequestParam(required = true) int lessonId, @RequestParam(required = true) String newContent);
   
   @Operation(
       summary = "Deletes a Lesson",
@@ -221,7 +239,7 @@ public interface LessonController {
       },
       parameters = {
           @Parameter(
-              name = "id", 
+              name = "lessonId", 
               allowEmptyValue = false, 
               required = true, 
               description = "The lesson id"),
@@ -229,8 +247,10 @@ public interface LessonController {
    )
   @ResponseStatus(code = HttpStatus.OK)
   @DeleteMapping
-  void deleteLesson(@RequestParam(required = true) int id);
+  int deleteLesson(@RequestParam(required = true) int lessonId);
+     
+  }
  
-
+ 
   //@formatter:on
-}
+

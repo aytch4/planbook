@@ -5,14 +5,14 @@ import staples.heather.planbook.entity.Unit;
 
 public interface UnitService {
 
-  List<Unit> fetchUnit(int id);
+  List<Unit> fetchUnitsBySubjectByGrade(int subjectId, int gradeNumber);
   
-  List<Unit> listAllUnits();
-  
-  void deleteUnit(int id);
-  
-  void createUnit(String name, int subject_id);
-  
-  void updateUnit(String oldName, String newName);
-  
+//  List<Unit> listAllUnits();
+//  
+//  void deleteUnit(int id);
+//  
+//  void createUnit(String unitName, int subjectId, int gradeNumber);
+//  
+//  void updateUnit(String oldName, String newName);
+//  
 }

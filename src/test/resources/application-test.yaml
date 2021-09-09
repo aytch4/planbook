@@ -1,9 +1,9 @@
-spring:
-  datasource:
-    url: jdbc:h2:mem:planbook
-
-
-logging:
-  level:
-    root: warn
-    '[staples.heather]': debug
+#spring:
+#  datasource:
+#    url: jdbc:h2:mem:planbook
+#
+#
+#logging:
+#  level:
+#    root: warn
+#    '[staples.heather]': debug

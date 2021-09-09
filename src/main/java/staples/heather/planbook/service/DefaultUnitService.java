@@ -16,30 +16,30 @@ public class DefaultUnitService implements UnitService{
   private UnitDao unitDao;
 
   @Override
-  public List<Unit> fetchUnit(int id) {
-    List<Unit> unit = unitDao.fetchUnit(id);
-    return unit;
-  }
-
-  @Override
-  public List<Unit> listAllUnits() {
-    List<Unit> units = unitDao.listAllUnits();
+  public List<Unit> fetchUnitsBySubjectByGrade(int subjectId, int gradeNumber) {
+    List<Unit> units = unitDao.fetchUnitsBySubjectByGrade(subjectId, gradeNumber);
     return units;
   }
-
-  @Override
-  public void createUnit(String name, int subject_id) {
-    unitDao.createUnit(name,  subject_id);
-  }
-
-  @Override
-  public void updateUnit(String oldName, String newName) {
-    unitDao.updateUnit(oldName,  newName);
-  }
-  
-  @Override
-  public void deleteUnit(int id) {
-    unitDao.deleteUnit(id);
-  }
-  
+//
+//  @Override
+//  public List<Unit> listAllUnits() {
+//    List<Unit> units = unitDao.listAllUnits();
+//    return units;
+//  }
+//
+//  @Override
+//  public void createUnit(String unitName, int subjectId, int gradeNumber) {
+//    unitDao.createUnit(unitName,  subjectId, gradeNumber);
+//  }
+//
+//  @Override
+//  public void updateUnit(String oldName, String newName) {
+//    unitDao.updateUnit(oldName,  newName);
+//  }
+//  
+//  @Override
+//  public void deleteUnit(int id) {
+//    unitDao.deleteUnit(id);
+//  }
+//  
 }

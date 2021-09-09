@@ -32,77 +32,10 @@ public class DefaultSubjectDao implements SubjectDao {
       @Override
       public Subject mapRow(ResultSet rs, int rowNum) throws SQLException {
         return Subject.builder()
-            .id(rs.getInt("id"))
-            .name(rs.getString("name"))
+            .subjectId(rs.getInt("subjectId"))
+            .subjectName(rs.getString("subjectName"))
             .build();
       }});
     }  
-  @Override
-  public List<Subject> fetchSubject(String name) {
-    
-    String sqlFetch = "SELECT * FROM subject WHERE name = :name";
-        
-    Map<String,Object> params = new HashMap<>();
-    params.put("name", name);
-    
-    return jdbcTemplate.query(sqlFetch,  params, new RowMapper<>() {
 
-      @Override
-      public Subject mapRow(ResultSet rs, int rowNum) throws SQLException {
-        return Subject.builder()
-            .id(rs.getInt("id"))
-            .name(rs.getString("name"))
-            .build();
-      }});
-    }
-@Override
-  public void deleteSubject(String name) {
-    // @formatter:off
-    String sql = ""
-        + "DELETE FROM subject "
-        + "WHERE name = :name;";
-    // @formatter:on    
-       
-    Map<String, Object> params = new HashMap<>();
-    
-    params.put("name", name);    
-    jdbcTemplate.update(sql,  params);
-  }
-  @Override
-  public void createSubject(String name) {
-   
-   String sqlCreate = "INSERT INTO subject (name) VALUES (name = :name)";
-       
-   Map<String,Object> params = new HashMap<>();
-   params.put("name", name);
-   
-   jdbcTemplate.update(sqlCreate,  params);
-  //we don't have access to id because auto-incrementing
-  //get get id by retrieving this from database
-//     return Subject.builder()
-//         .name(name)
-//         .build(); 
-  }
-  
-  @Override
-   public void updateSubject(String oldName, String newName) {
-     
-     String sqlUpdate = "UPDATE subject SET name = :newName WHERE name = :oldName";
- 
-     
-  //HOW TO DEAL WITH THESE PARAMS
-     
-     Map<String,Object> params = new HashMap<>();
-     params.put("oldName", oldName);
-     params.put("newName", newName);
-     
-     jdbcTemplate.update(sqlUpdate,  params);
-     //we don't have access to id because auto-incrementing
-     //get get id by retrieving this from database
-//        return Subject.builder()
-//            .name(newName)
-//            .build();
-     }
-
- 
 }

@@ -5,14 +5,14 @@ import staples.heather.planbook.entity.Subject;
 
 public interface SubjectService {
 
-  List<Subject> fetchSubject(String name);
+//  List<Subject> fetchSubject(String subjectName);
   
   List<Subject> listAllSubjects();
   
-  void createSubject(String name);
+//  void createSubject(String subjectName);
   
-  void updateSubject(String oldName, String newName);
+//  void updateSubject(String oldName, String newName);
   
-  void deleteSubject(String name);
+//  void deleteSubject(String subjectName);
   
 }

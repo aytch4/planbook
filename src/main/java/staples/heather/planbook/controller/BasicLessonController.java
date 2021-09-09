@@ -1,8 +1,8 @@
 package staples.heather.planbook.controller;
 
 import java.util.List;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
 import lombok.extern.slf4j.Slf4j;
 import staples.heather.planbook.entity.Lesson;
@@ -16,31 +16,33 @@ public class BasicLessonController implements LessonController{
   private LessonService lessonService;
   
   @Override
-  public List<Lesson> fetchLesson(int id) {
-    return lessonService.fetchLesson(id);
+  public List<Lesson> fetchLessonById(int lessonId) {
+    return lessonService.fetchLessonById(lessonId);
   }
 
   @Override
-  public void createLesson(String name, String objective, String content, int unitId) {
-    lessonService.createLesson(name, objective, content, unitId);
-    
+  public List<Lesson> fetchLessonsByUnit(int unitId) {
+    return lessonService.fetchLessonsByUnit(unitId);
+  }
+  
+  @Override
+  public void createLesson(String lessonName, String objective, String content, int unitId) {
+    lessonService.createLesson(lessonName, objective, content, unitId);
   }
 
   @Override
-  public void updateLesson(int id, String newName, String newObjective, String newContent) {
-    lessonService.updateLesson(id, newName, newObjective, newContent);
-    
+  public int updateLesson(int lessonId, String newContent) {
+    return lessonService.updateLesson(lessonId, newContent);
   }
 
   @Override
-  public void deleteLesson(int id) {
-    lessonService.deleteLesson(id);
-  }
-
+  public int deleteLesson(int lessonId) {
+    return lessonService.deleteLesson(lessonId);
+      
+    }
+  
   @Override
   public List<Lesson> listAllLessons() {
     return lessonService.listAllLessons();
   }
-
-
 }

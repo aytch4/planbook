@@ -11,12 +11,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Unit {
-  private int id;
-  private String name;
+  private int unitId;
+  private String unitName;
   private int subjectId;
+  private int gradeNumber;
   
   @JsonIgnore
   public int getId() {
-    return id;
+    return unitId;
   }
 }

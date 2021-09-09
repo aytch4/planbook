@@ -11,11 +11,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Subject {
-  private int id;
-  private String name;
+  private int subjectId;
+  private String subjectName;
   
   @JsonIgnore
   public int getId() {
-    return id;
+    return subjectId;
   }
 }

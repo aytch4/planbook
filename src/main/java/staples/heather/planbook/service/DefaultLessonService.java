@@ -15,11 +15,17 @@ import staples.heather.planbook.entity.Lesson;
     private LessonDao lessonDao;
     
     @Override
-    public List<Lesson> fetchLesson(int id) {
-      List<Lesson> lesson = lessonDao.fetchLesson(id);
+    public List<Lesson> fetchLessonById(int lessonId) {
+      List<Lesson> lesson = lessonDao.fetchLessonById(lessonId);
       return lesson;
     }
 
+    @Override
+    public List<Lesson> fetchLessonsByUnit(int unitId) {
+      List<Lesson> lessons = lessonDao.fetchLessonsByUnit(unitId);
+      return lessons;
+    }
+    
     @Override
     public List<Lesson> listAllLessons() {
       List<Lesson> lessons = lessonDao.listAllLessons();
@@ -27,16 +33,16 @@ import staples.heather.planbook.entity.Lesson;
     }
     
     @Override
-    public void createLesson(String name, String objective, String content, int unitId) {
-      lessonDao.createLesson(name,  objective,  content, unitId);
+    public void createLesson(String lessonName, String objective, String content, int unitId) {
+      lessonDao.createLesson(lessonName,  objective,  content, unitId);
     }
     
     @Override
-    public void updateLesson(int id, String newName, String newObjective, String newContent) {
-      lessonDao.updateLesson(id, newName, newObjective, newContent);
+    public int updateLesson(int id, String newContent) {
+      return lessonDao.updateLesson(id, newContent);
     }
     
-    public void deleteLesson(int id) {
-      lessonDao.deleteLesson(id);
+    public int deleteLesson(int id) {
+      return lessonDao.deleteLesson(id);
     }
   }

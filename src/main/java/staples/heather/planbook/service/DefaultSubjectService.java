@@ -15,11 +15,11 @@ public class DefaultSubjectService implements SubjectService{
   @Autowired
   private SubjectDao subjectDao;
 
-  @Override
-  public List<Subject> fetchSubject(String name) {
-    List<Subject> subject = subjectDao.fetchSubject(name);
-    return subject;
-  }
+//  @Override
+//  public List<Subject> fetchSubject(String subjectName) {
+//    List<Subject> subject = subjectDao.fetchSubject(subjectName);
+//    return subject;
+//  }
 
   @Override
   public List<Subject> listAllSubjects() {
@@ -27,24 +27,20 @@ public class DefaultSubjectService implements SubjectService{
     return subjects;
   }
 
-  @Override
-  public void createSubject(String name) {
-    subjectDao.createSubject(name);
-  }
+//  @Override
+//  public void createSubject(String subjectName) {
+//    subjectDao.createSubject(subjectName);
+//  }
 
-  @Override
-  public void updateSubject(String oldName, String newName) {
-    subjectDao.updateSubject(oldName, newName);
-  }
+//  @Override
+//  public void updateSubject(String oldName, String newName) {
+//    subjectDao.updateSubject(oldName, newName);
+//  }
 
-  @Override
-  public void deleteSubject(String name) {
-    subjectDao.deleteSubject(name);
-    
-  }
-  
-  
-  
-
+//  @Override
+//  public void deleteSubject(String subjectName) {
+//    subjectDao.deleteSubject(subjectName);
+//    
+//  }
 }
 

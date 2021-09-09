@@ -5,16 +5,14 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 import lombok.extern.slf4j.Slf4j;
 import staples.heather.planbook.entity.Lesson;
-import staples.heather.planbook.entity.StudentGroup;
-import staples.heather.planbook.entity.Subject;
-import staples.heather.planbook.entity.Unit;
-import staples.heather.planbook.entity.User;
 
 @Component
 @Slf4j
@@ -34,96 +32,107 @@ public class DefaultLessonDao implements LessonDao {
     @Override
     public Lesson mapRow(ResultSet rs, int rowNum) throws SQLException {
       return Lesson.builder()
-          .id(rs.getInt("id"))
-          .name(rs.getString("name"))
+          .lessonId(rs.getInt("lessonId"))
+          .lessonName(rs.getString("lessonName"))
           .objective(rs.getString("objective"))
           .content(rs.getString("content"))
-          .unitId(rs.getInt("unit_Id"))
+          .unitId(rs.getInt("unitId"))
           .build();
     }});
     
     }
 
   @Override
-  public List<Lesson> fetchLesson(int id) {
+  public List<Lesson> fetchLessonById(int lessonId) {
     
-    String sqlFetch = "SELECT * FROM lesson WHERE id = :id";
+    String sqlFetch = "SELECT * FROM lesson WHERE lessonId = :lessonId";
         
     Map<String,Object> params = new HashMap<>();
-    params.put("id", id);
+    params.put("lessonId", lessonId);
     
     return jdbcTemplate.query(sqlFetch,  params, new RowMapper<>() {
 
       @Override
       public Lesson mapRow(ResultSet rs, int rowNum) throws SQLException {
         return Lesson.builder()
-            .id(rs.getInt("id"))
-            .name(rs.getString("name"))
+            .lessonId(rs.getInt("lessonId"))
+            .lessonName(rs.getString("lessonName"))
             .objective(rs.getString("objective"))
             .content(rs.getString("content"))
-            .unitId(rs.getInt("unit_Id"))
+            .unitId(rs.getInt("unitId"))
             .build();
       }});
     }
 
-public void deleteLesson(int id) {
+  @Override
+  public List<Lesson> fetchLessonsByUnit(int unitId) {
+    
+    String sqlFetch = "SELECT * FROM lesson WHERE unitId = :unitId";
+        
+    Map<String,Object> params = new HashMap<>();
+    params.put("unitId", unitId);
+    
+    return jdbcTemplate.query(sqlFetch,  params, new RowMapper<>() {
+
+      @Override
+      public Lesson mapRow(ResultSet rs, int rowNum) throws SQLException {
+        return Lesson.builder()
+            .lessonId(rs.getInt("lessonId"))
+            .lessonName(rs.getString("lessonName"))
+            .objective(rs.getString("objective"))
+            .content(rs.getString("content"))
+            .unitId(rs.getInt("unitId"))
+            .build();
+      }});
+    }
+  
+  
+public int deleteLesson(int lessonId) {
     // @formatter:off
     String sql = ""
         + "DELETE FROM lesson "
-        + "WHERE id = :id;";
+        + "WHERE lessonId = :lessonId;";
     // @formatter:on    
        
     Map<String, Object> params = new HashMap<>();
     
-    params.put("id", id);    
-    jdbcTemplate.update(sql,  params);
-  }
+    params.put("lessonId", lessonId);    
+    if (jdbcTemplate.update(sql,  params) == 0) {
+      throw new NoSuchElementException();
+    };
+    return jdbcTemplate.update(sql, params);
+   }
+  
 
-  public void createLesson(String name, String objective, String content, int unit_id) {
+  
+  public void createLesson(String lessonName, String objective, String content, int unitId) {
    
-   String sqlCreate = "INSERT INTO unit (name, objective, content, unit_id) VALUES (name = :name, objective = :objective, content = :content, unit_id = :unit_id)";
+   String sqlCreate = "INSERT INTO lesson (lessonName, objective, content, unitId) VALUES ( :lessonName, :objective, :content,  :unitId)";
        
    Map<String,Object> params = new HashMap<>();
-   params.put("name", name);
+   params.put("lessonName", lessonName);
    params.put("objective", objective);
    params.put("content", content);
-   params.put("unit_id", unit_id);
+   params.put("unitId", unitId);
    
    jdbcTemplate.update(sqlCreate,  params);
-  //we don't have access to id because auto-incrementing
-  //get get id by retrieving this from database
-//   return Lesson.builder()
-//       .name(name)
-//       .objective(objective)
-//       .content(content)
-//       .unitId(unit_id)
-//       .build();
   }
 
   
-  public void updateLesson(int id, String newName, String newObjective, String newContent) {
+  public int updateLesson(int lessonId, String newContent) {
      
-    String sqlUpdate = "UPDATE lesson SET name = :newName, objective = :newObjective, content = :newContent WHERE id = :id";
- 
-     
-  //HOW TO DEAL WITH THESE PARAMS
+    String sqlUpdate = "UPDATE lesson SET content = :newContent WHERE lessonId = :lessonId";
      
      Map<String,Object> params = new HashMap<>();
-     params.put("id", id);
-     params.put("newName", newName);
-     params.put("newObjective", newObjective);
+     params.put("lessonId", lessonId);
      params.put("newContent", newContent);
      
-     jdbcTemplate.update(sqlUpdate,  params);
-     //we don't have access to id because auto-incrementing
-     //get get id by retrieving this from database
-//     return Lesson.builder()
-//         .name(newName)
-//         .objective(newObjective)
-//         .content(newContent)
-//         .build();
-     }
+     if (jdbcTemplate.update(sqlUpdate,  params) == 0) {
+       throw new NoSuchElementException();
+     };
+     return jdbcTemplate.update(sqlUpdate, params);
+    }
+  }
 
-  
+
  
-}

@@ -6,13 +6,15 @@ import staples.heather.planbook.entity.Unit;
 
 public interface LessonDao {
 
-  List<Lesson> fetchLesson(int id);
+  List<Lesson> fetchLessonById(int lessonId);
+  
+  List<Lesson> fetchLessonsByUnit(int unitId);  
   
   List<Lesson> listAllLessons();
   
-  void createLesson(String name, String objective, String content, int unit_id);
+  void createLesson(String lessonName, String objective, String content, int unitId);
   
-  void updateLesson(int id, String newName, String newObjective, String newContent);
+  int updateLesson(int lessonId, String newContent);
   
-  void deleteLesson(int id);
+  int deleteLesson(int lessonId);
 }

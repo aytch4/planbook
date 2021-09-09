@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import javax.validation.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -26,6 +27,13 @@ public class GlobalErrorHandler {
   public Map<String, Object> handleConstraintViolationException(ConstraintViolationException e, WebRequest webRequest) {
     return createExceptionMessage(e, HttpStatus.BAD_REQUEST, webRequest, LogStatus.MESSAGE_ONLY);
   }
+  
+  @ExceptionHandler(DataIntegrityViolationException.class)
+  @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+  public Map<String, Object> handleConstraintViolationException(DataIntegrityViolationException e, WebRequest webRequest) {
+    return createExceptionMessage(e, HttpStatus.BAD_REQUEST, webRequest, LogStatus.MESSAGE_ONLY);
+  }
+  
   
   @ExceptionHandler(Exception.class)
   @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
